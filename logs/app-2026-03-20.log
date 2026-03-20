@@ -57,3 +57,8 @@
 2026-03-20T13:58:16.422Z ℹ️  INFO  [BrowserResolver] Found local browser at: /Applications/Google Chrome.app/Contents/MacOS/Google Chrome
 2026-03-20T13:58:24.611Z ✅ OK    [PdfGenerator] SVG→PDF complete — 5286290 bytes
 2026-03-20T13:58:24.611Z 🔹 STEP  [ProductProcessingService] Uploading "bf86c56d-3b63-40e4-9d23-c392ecc66929.pdf" to Drive folder 10c966pE-f0C4c8ulNhR7Uw3LuGCQlvEa
+2026-03-20T13:58:27.369Z ✅ OK    [ProductProcessingService] Uploaded "bf86c56d-3b63-40e4-9d23-c392ecc66929.pdf" → Drive file ID: 1gLHOK9a-kYJNUiGNBDYT5qEVufQACx71
+2026-03-20T13:58:27.370Z 🔹 STEP  [ProductProcessingService] Creating Files DB record for Drive file 1gLHOK9a-kYJNUiGNBDYT5qEVufQACx71
+2026-03-20T13:58:27.587Z ✅ OK    [ProductProcessingService] Files record created: c30eea99-c79d-48ee-96ca-83837efcca55
+2026-03-20T13:58:27.587Z 🔹 STEP  [ProductProcessingService] Updating production_file on OrderedProduct bf86c56d-3b63-40e4-9d23-c392ecc66929
+2026-03-20T13:58:27.955Z ✅ OK    [ProductProcessingService] production_file updated for product bf86c56d-3b63-40e4-9d23-c392ecc66929
