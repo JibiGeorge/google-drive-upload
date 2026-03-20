@@ -1,0 +1,39 @@
+2026-03-20T13:20:06.203Z ℹ️  INFO  [ProductProcessingService] Processing product bf86c56d-3b63-40e4-9d23-c392ecc66929 (payload_type: name_slip)
+2026-03-20T13:20:06.204Z 🔹 STEP  [ProductProcessingService] Resolving Drive folder — payloadType: name_slip, orderDate: 2026-03-19T16:40:49.998Z
+2026-03-20T13:20:07.680Z ❌ ERROR [ProductProcessingService] Failed to process product bf86c56d-3b63-40e4-9d23-c392ecc66929
+{
+  "message": "Insufficient permissions for the specified parent.",
+  "stack": "Error: Insufficient permissions for the specified parent.\n    at Gaxios._request (/Users/jibigeorge/Desktop/FL/syncDrive/drive-upload-service/node_modules/gaxios/src/gaxios.ts:146:15)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at JWT.requestAsync (/Users/jibigeorge/Desktop/FL/syncDrive/drive-upload-service/node_modules/google-auth-library/build/src/auth/oauth2client.js:429:18)\n    at getOrCreateFolder (/Users/jibigeorge/Desktop/FL/syncDrive/drive-upload-service/src/services/driveFolderService.ts:23:18)\n    at resolveProductFolder (/Users/jibigeorge/Desktop/FL/syncDrive/drive-upload-service/src/services/driveFolderService.ts:78:27)\n    at processProduct (/Users/jibigeorge/Desktop/FL/syncDrive/drive-upload-service/src/services/productProcessingService.ts:41:46)\n    at async Promise.all (index 0)\n    at handleDriveUpload (/Users/jibigeorge/Desktop/FL/syncDrive/drive-upload-service/src/routes/driveUpload.handler.ts:73:21)",
+  "code": 403
+}
+2026-03-20T13:29:42.137Z ℹ️  INFO  [ProductProcessingService] Processing product bf86c56d-3b63-40e4-9d23-c392ecc66929 (payload_type: name_slip)
+2026-03-20T13:29:42.138Z 🔹 STEP  [ProductProcessingService] Resolving Drive folder — payloadType: name_slip, orderDate: 2026-03-19T16:40:49.998Z
+2026-03-20T13:29:42.146Z ❌ ERROR [ProductProcessingService] Failed to process product bf86c56d-3b63-40e4-9d23-c392ecc66929
+{
+  "message": "No access, refresh token, API key or refresh handler callback is set.",
+  "stack": "Error: No access, refresh token, API key or refresh handler callback is set.\n    at OAuth2Client.getRequestMetadataAsync (/Users/jibigeorge/Desktop/FL/syncDrive/drive-upload-service/node_modules/google-auth-library/build/src/auth/oauth2client.js:307:19)\n    at OAuth2Client.requestAsync (/Users/jibigeorge/Desktop/FL/syncDrive/drive-upload-service/node_modules/google-auth-library/build/src/auth/oauth2client.js:418:34)\n    at OAuth2Client.request (/Users/jibigeorge/Desktop/FL/syncDrive/drive-upload-service/node_modules/google-auth-library/build/src/auth/oauth2client.js:412:25)\n    at createAPIRequestAsync (/Users/jibigeorge/Desktop/FL/syncDrive/drive-upload-service/node_modules/googleapis-common/build/src/apirequest.js:303:31)\n    at createAPIRequest (/Users/jibigeorge/Desktop/FL/syncDrive/drive-upload-service/node_modules/googleapis-common/build/src/apirequest.js:52:16)\n    at Resource$Files.list (/Users/jibigeorge/Desktop/FL/syncDrive/drive-upload-service/node_modules/googleapis/build/src/apis/drive/v3.js:932:65)\n    at getOrCreateFolder (/Users/jibigeorge/Desktop/FL/syncDrive/drive-upload-service/src/services/driveFolderService.ts:14:33)\n    at getOrCreateFolderCached (/Users/jibigeorge/Desktop/FL/syncDrive/drive-upload-service/src/services/driveFolderService.ts:48:26)\n    at resolveProductFolder (/Users/jibigeorge/Desktop/FL/syncDrive/drive-upload-service/src/services/driveFolderService.ts:78:33)\n    at processProduct (/Users/jibigeorge/Desktop/FL/syncDrive/drive-upload-service/src/services/productProcessingService.ts:41:72)"
+}
+2026-03-20T13:34:09.522Z ℹ️  INFO  [ProductProcessingService] Processing product bf86c56d-3b63-40e4-9d23-c392ecc66929 (payload_type: name_slip)
+2026-03-20T13:34:09.524Z 🔹 STEP  [ProductProcessingService] Resolving Drive folder — payloadType: name_slip, orderDate: 2026-03-19T16:40:49.998Z
+2026-03-20T13:34:12.494Z 🔹 STEP  [ProductProcessingService] Generating PDF from image: https://phihrrgpwcfbugxdwmay.supabase.co/storage/v1/object/public/nameslip-previews/previews/e3589fcb-b53d-4ab1-9f8a-ee2b3c9083f0-d8eab5c5-bca2-47f6-8188-9bbe9f8fe047-5b10691a-6e6a-4eaf-824d-f2d0bc49ef3c-1773938455373.svg
+2026-03-20T13:34:12.495Z ℹ️  INFO  [PdfGenerator] Downloading image: https://phihrrgpwcfbugxdwmay.supabase.co/storage/v1/object/public/nameslip-previews/previews/e3589fcb-b53d-4ab1-9f8a-ee2b3c9083f0-d8eab5c5-bca2-47f6-8188-9bbe9f8fe047-5b10691a-6e6a-4eaf-824d-f2d0bc49ef3c-1773938455373.svg
+2026-03-20T13:34:14.288Z ℹ️  INFO  [PdfGenerator] SVG detected — using Puppeteer for high-quality PDF conversion
+2026-03-20T13:34:14.294Z ℹ️  INFO  [BrowserResolver] Found browser at: /Applications/Google Chrome.app/Contents/MacOS/Google Chrome
+2026-03-20T13:34:22.267Z ❌ ERROR [ProductProcessingService] Failed to process product bf86c56d-3b63-40e4-9d23-c392ecc66929
+{
+  "message": "logger.success is not a function",
+  "stack": "TypeError: logger.success is not a function\n    at generatePdfFromImage (/Users/jibigeorge/Desktop/FL/syncDrive/drive-upload-service/src/utils/pdfGenerator.ts:130:12)\n    at processProduct (/Users/jibigeorge/Desktop/FL/syncDrive/drive-upload-service/src/services/productProcessingService.ts:51:23)\n    at async Promise.all (index 0)\n    at handleDriveUpload (/Users/jibigeorge/Desktop/FL/syncDrive/drive-upload-service/src/routes/driveUpload.handler.ts:73:21)"
+}
+2026-03-20T13:36:50.997Z ℹ️  INFO  [ProductProcessingService] Processing product bf86c56d-3b63-40e4-9d23-c392ecc66929 (payload_type: name_slip)
+2026-03-20T13:36:50.998Z 🔹 STEP  [ProductProcessingService] Resolving Drive folder — payloadType: name_slip, orderDate: 2026-03-19T16:40:49.998Z
+2026-03-20T13:36:52.164Z 🔹 STEP  [ProductProcessingService] Generating PDF from image: https://phihrrgpwcfbugxdwmay.supabase.co/storage/v1/object/public/nameslip-previews/previews/e3589fcb-b53d-4ab1-9f8a-ee2b3c9083f0-d8eab5c5-bca2-47f6-8188-9bbe9f8fe047-5b10691a-6e6a-4eaf-824d-f2d0bc49ef3c-1773938455373.svg
+2026-03-20T13:36:52.166Z ℹ️  INFO  [PdfGenerator] Downloading image: https://phihrrgpwcfbugxdwmay.supabase.co/storage/v1/object/public/nameslip-previews/previews/e3589fcb-b53d-4ab1-9f8a-ee2b3c9083f0-d8eab5c5-bca2-47f6-8188-9bbe9f8fe047-5b10691a-6e6a-4eaf-824d-f2d0bc49ef3c-1773938455373.svg
+2026-03-20T13:36:53.663Z ℹ️  INFO  [PdfGenerator] SVG detected — using Puppeteer for high-quality PDF conversion
+2026-03-20T13:36:53.671Z ℹ️  INFO  [BrowserResolver] Found browser at: /Applications/Google Chrome.app/Contents/MacOS/Google Chrome
+2026-03-20T13:37:01.337Z ✅ OK    [PdfGenerator] SVG→PDF complete — 5286290 bytes
+2026-03-20T13:37:01.337Z 🔹 STEP  [ProductProcessingService] Uploading "bf86c56d-3b63-40e4-9d23-c392ecc66929.pdf" to Drive folder 1p5r7NLdaYWcItDXXRwdkxJJwoyCEobmz
+2026-03-20T13:37:06.417Z ✅ OK    [ProductProcessingService] Uploaded "bf86c56d-3b63-40e4-9d23-c392ecc66929.pdf" → Drive file ID: 1nTFvPtpHw2_peD1KNA7NsvxDmJsuyjb0
+2026-03-20T13:37:06.418Z 🔹 STEP  [ProductProcessingService] Creating Files DB record for Drive file 1nTFvPtpHw2_peD1KNA7NsvxDmJsuyjb0
+2026-03-20T13:37:06.597Z ✅ OK    [ProductProcessingService] Files record created: 78ad6387-9f20-46c6-95a7-3a94e54623e1
+2026-03-20T13:37:06.598Z 🔹 STEP  [ProductProcessingService] Updating production_file on OrderedProduct bf86c56d-3b63-40e4-9d23-c392ecc66929
+2026-03-20T13:37:06.744Z ✅ OK    [ProductProcessingService] production_file updated for product bf86c56d-3b63-40e4-9d23-c392ecc66929
