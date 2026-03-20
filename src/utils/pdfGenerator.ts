@@ -1,7 +1,7 @@
 import axios from "axios";
 import puppeteer from "puppeteer-core";
 import { createLogger } from "./logger";
-import { resolveBrowserExecutablePath } from "./browserResolver";
+import { resolveBrowserConfig } from "./browserResolver";
 
 const logger = createLogger("PdfGenerator");
 
@@ -56,7 +56,7 @@ async function svgToPdf(svgText: string): Promise<Buffer> {
 
   logger.debug(`Launching headless browser for SVG→PDF (page: ${width}×${height}px)`);
 
-  const executablePath = resolveBrowserExecutablePath();
+  const { executablePath, args } = await resolveBrowserConfig();
 
   const html = `<!DOCTYPE html>
 <html>
@@ -73,12 +73,7 @@ async function svgToPdf(svgText: string): Promise<Buffer> {
 
   const browser = await puppeteer.launch({
     executablePath,
-    args: [
-      "--no-sandbox",
-      "--disable-setuid-sandbox",
-      "--disable-dev-shm-usage",
-      "--disable-gpu",
-    ],
+    args,
     headless: true,
   });
 
@@ -149,7 +144,7 @@ export async function generatePdfFromImage(imageUrl: string): Promise<Buffer> {
     });
 
     doc.on("error", (err: Error) => {
-      logger.error("PDFDocument emitted an error", err);
+      logger.exception("PDFDocument emitted an error", err);
       reject(err);
     });
 

@@ -22,7 +22,6 @@ export const config = {
   },
 
   googleDrive: {
-    clientEmail: requireEnv("GOOGLE_CLIENT_EMAIL"),
     defaultFolderId: process.env.GOOGLE_DRIVE_FOLDER_ID || null,
 
     clientId: requireEnv("GOOGLE_CLIENT_ID"),

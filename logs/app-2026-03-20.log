@@ -37,3 +37,23 @@
 2026-03-20T13:37:06.597Z ✅ OK    [ProductProcessingService] Files record created: 78ad6387-9f20-46c6-95a7-3a94e54623e1
 2026-03-20T13:37:06.598Z 🔹 STEP  [ProductProcessingService] Updating production_file on OrderedProduct bf86c56d-3b63-40e4-9d23-c392ecc66929
 2026-03-20T13:37:06.744Z ✅ OK    [ProductProcessingService] production_file updated for product bf86c56d-3b63-40e4-9d23-c392ecc66929
+2026-03-20T13:54:03.186Z ℹ️  INFO  [ProductProcessingService] Processing product bf86c56d-3b63-40e4-9d23-c392ecc66929 (payload_type: name_slip)
+2026-03-20T13:54:03.188Z 🔹 STEP  [ProductProcessingService] Resolving Drive folder — payloadType: name_slip, orderDate: 2026-03-20T13:53:54.686Z
+2026-03-20T13:54:04.972Z 🔹 STEP  [ProductProcessingService] Generating PDF from image: https://phihrrgpwcfbugxdwmay.supabase.co/storage/v1/object/public/nameslip-previews/previews/e3589fcb-b53d-4ab1-9f8a-ee2b3c9083f0-d8eab5c5-bca2-47f6-8188-9bbe9f8fe047-5b10691a-6e6a-4eaf-824d-f2d0bc49ef3c-1774014838200.svg
+2026-03-20T13:54:04.974Z ℹ️  INFO  [PdfGenerator] Downloading image: https://phihrrgpwcfbugxdwmay.supabase.co/storage/v1/object/public/nameslip-previews/previews/e3589fcb-b53d-4ab1-9f8a-ee2b3c9083f0-d8eab5c5-bca2-47f6-8188-9bbe9f8fe047-5b10691a-6e6a-4eaf-824d-f2d0bc49ef3c-1774014838200.svg
+2026-03-20T13:54:07.980Z ℹ️  INFO  [PdfGenerator] SVG detected — using Puppeteer for high-quality PDF conversion
+2026-03-20T13:54:09.081Z ℹ️  INFO  [BrowserResolver] Using @sparticuz/chromium: /var/folders/74/lj8wn8697zg4bqfhnxnjx7t00000gn/T/chromium
+2026-03-20T13:54:09.107Z ❌ ERROR [ProductProcessingService] Failed to process product bf86c56d-3b63-40e4-9d23-c392ecc66929
+{
+  "message": "spawn Unknown system error -8",
+  "stack": "Error: spawn Unknown system error -8\n    at ChildProcess.spawn (node:internal/child_process:420:11)\n    at Object.spawn (node:child_process:753:9)\n    at new Process (/Users/jibigeorge/Desktop/FL/syncDrive/drive-upload-service/node_modules/@puppeteer/browsers/src/launch.ts:338:41)\n    at launch (/Users/jibigeorge/Desktop/FL/syncDrive/drive-upload-service/node_modules/@puppeteer/browsers/src/launch.ts:206:10)\n    at ChromeLauncher.launch (/Users/jibigeorge/Desktop/FL/syncDrive/drive-upload-service/node_modules/puppeteer-core/src/node/BrowserLauncher.ts:138:34)\n    at svgToPdf (/Users/jibigeorge/Desktop/FL/syncDrive/drive-upload-service/src/utils/pdfGenerator.ts:74:19)\n    at generatePdfFromImage (/Users/jibigeorge/Desktop/FL/syncDrive/drive-upload-service/src/utils/pdfGenerator.ts:124:17)\n    at processProduct (/Users/jibigeorge/Desktop/FL/syncDrive/drive-upload-service/src/services/productProcessingService.ts:51:23)\n    at async Promise.all (index 0)\n    at handleDriveUpload (/Users/jibigeorge/Desktop/FL/syncDrive/drive-upload-service/src/routes/driveUpload.handler.ts:73:21)",
+  "code": "Unknown system error -8"
+}
+2026-03-20T13:58:13.494Z ℹ️  INFO  [ProductProcessingService] Processing product bf86c56d-3b63-40e4-9d23-c392ecc66929 (payload_type: name_slip)
+2026-03-20T13:58:13.495Z 🔹 STEP  [ProductProcessingService] Resolving Drive folder — payloadType: name_slip, orderDate: 2026-03-20T13:53:54.686Z
+2026-03-20T13:58:14.614Z 🔹 STEP  [ProductProcessingService] Generating PDF from image: https://phihrrgpwcfbugxdwmay.supabase.co/storage/v1/object/public/nameslip-previews/previews/e3589fcb-b53d-4ab1-9f8a-ee2b3c9083f0-d8eab5c5-bca2-47f6-8188-9bbe9f8fe047-5b10691a-6e6a-4eaf-824d-f2d0bc49ef3c-1774014838200.svg
+2026-03-20T13:58:14.616Z ℹ️  INFO  [PdfGenerator] Downloading image: https://phihrrgpwcfbugxdwmay.supabase.co/storage/v1/object/public/nameslip-previews/previews/e3589fcb-b53d-4ab1-9f8a-ee2b3c9083f0-d8eab5c5-bca2-47f6-8188-9bbe9f8fe047-5b10691a-6e6a-4eaf-824d-f2d0bc49ef3c-1774014838200.svg
+2026-03-20T13:58:16.413Z ℹ️  INFO  [PdfGenerator] SVG detected — using Puppeteer for high-quality PDF conversion
+2026-03-20T13:58:16.422Z ℹ️  INFO  [BrowserResolver] Found local browser at: /Applications/Google Chrome.app/Contents/MacOS/Google Chrome
+2026-03-20T13:58:24.611Z ✅ OK    [PdfGenerator] SVG→PDF complete — 5286290 bytes
+2026-03-20T13:58:24.611Z 🔹 STEP  [ProductProcessingService] Uploading "bf86c56d-3b63-40e4-9d23-c392ecc66929.pdf" to Drive folder 10c966pE-f0C4c8ulNhR7Uw3LuGCQlvEa

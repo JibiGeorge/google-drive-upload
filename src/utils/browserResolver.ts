@@ -4,10 +4,7 @@ import { createLogger } from "./logger";
 
 const logger = createLogger("BrowserResolver");
 
-/**
- * Known candidate paths per platform.
- * Checked in order — first existing path wins.
- */
+// ─── Platform candidate paths ─────────────────────────────────────────────────
 const CANDIDATES: Record<string, string[]> = {
   darwin: [
     "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
@@ -33,10 +30,7 @@ const CANDIDATES: Record<string, string[]> = {
   ],
 };
 
-/**
- * Tries to locate Chrome/Chromium via `which` / `where` as a last resort on
- * platforms where the binary might be on PATH but not in the candidate list.
- */
+// ─── PATH lookup ──────────────────────────────────────────────────────────────
 function findOnPath(platform: string): string | null {
   const commands =
     platform === "win32"
@@ -49,60 +43,120 @@ function findOnPath(platform: string): string | null {
         .toString()
         .trim()
         .split("\n")[0];
-      if (result && fs.existsSync(result)) {
-        return result;
-      }
+      if (result && fs.existsSync(result)) return result;
     } catch {
-      // command not found — try next
+      // not found on PATH — try next
     }
   }
   return null;
 }
 
+// ─── Serverless Chromium (for hosted environments) ────────────────────────────
 /**
- * Resolves the executable path for a Chromium-based browser.
+ * Attempts to resolve a Chromium executable using @sparticuz/chromium.
+ * This package bundles a pre-built Chromium binary that works on:
+ *   - AWS Lambda / EC2
+ *   - Render
+ *   - DigitalOcean App Platform / Droplets
+ *   - Google Cloud Run / Functions
+ *   - Any Linux container environment
+ *
+ * Returns { executablePath, args } on success, or null if unavailable.
+ */
+async function resolveServerlessChromium(): Promise<{
+  executablePath: string;
+  args: string[];
+} | null> {
+  // @sparticuz/chromium ships a Linux binary — skip it on macOS and Windows
+  if (process.platform !== "linux") {
+    logger.debug("Skipping @sparticuz/chromium on non-Linux platform");
+    return null;
+  }
+
+  try {
+    const chromium = await import("@sparticuz/chromium");
+    const executablePath = await chromium.default.executablePath();
+
+    if (!executablePath || !fs.existsSync(executablePath)) {
+      return null;
+    }
+
+    logger.info(`Using @sparticuz/chromium: ${executablePath}`);
+    return {
+      executablePath,
+      args: chromium.default.args,
+    };
+  } catch {
+    return null;
+  }
+}
+
+// ─── Public API ───────────────────────────────────────────────────────────────
+
+export interface BrowserConfig {
+  executablePath: string;
+  /** Recommended launch args for this environment */
+  args: string[];
+}
+
+const DEFAULT_ARGS = [
+  "--no-sandbox",
+  "--disable-setuid-sandbox",
+  "--disable-dev-shm-usage",
+  "--disable-gpu",
+];
+
+/**
+ * Resolves the best available Chromium executable for the current environment.
  *
  * Resolution order:
- *  1. `PUPPETEER_EXECUTABLE_PATH` env var (explicit override)
- *  2. Known installation paths for the current platform
- *  3. PATH lookup via `which` / `where`
+ *  1. `PUPPETEER_EXECUTABLE_PATH` env var   (explicit override)
+ *  2. @sparticuz/chromium                   (hosted / serverless environments)
+ *  3. Known local installation paths        (macOS / Linux / Windows)
+ *  4. PATH lookup via `which` / `where`     (last resort)
  *
+ * Returns a `BrowserConfig` with the executable path and recommended launch args.
  * Throws a descriptive error if no browser is found.
  */
-export function resolveBrowserExecutablePath(): string {
+export async function resolveBrowserConfig(): Promise<BrowserConfig> {
+  const platform = process.platform;
+
   // 1. Explicit env override
   const envPath = process.env.PUPPETEER_EXECUTABLE_PATH;
   if (envPath) {
     if (fs.existsSync(envPath)) {
       logger.info(`Using browser from PUPPETEER_EXECUTABLE_PATH: ${envPath}`);
-      return envPath;
+      return { executablePath: envPath, args: DEFAULT_ARGS };
     }
     logger.warn(`PUPPETEER_EXECUTABLE_PATH set but not found: ${envPath} — continuing auto-detect`);
   }
 
-  const platform = process.platform; // 'darwin' | 'linux' | 'win32'
-  const candidates = CANDIDATES[platform] ?? [];
+  // 2. Serverless Chromium (works on Render, AWS, DigitalOcean, GCR, etc.)
+  const serverless = await resolveServerlessChromium();
+  if (serverless) return serverless;
 
-  // 2. Known paths
+  // 3. Known local paths
+  const candidates = CANDIDATES[platform] ?? [];
   for (const candidate of candidates) {
     if (fs.existsSync(candidate)) {
-      logger.info(`Found browser at: ${candidate}`);
-      return candidate;
+      logger.info(`Found local browser at: ${candidate}`);
+      return { executablePath: candidate, args: DEFAULT_ARGS };
     }
   }
 
-  // 3. PATH lookup
+  // 4. PATH lookup
   const pathResult = findOnPath(platform);
   if (pathResult) {
     logger.info(`Found browser on PATH: ${pathResult}`);
-    return pathResult;
+    return { executablePath: pathResult, args: DEFAULT_ARGS };
   }
 
-  // Nothing found — give a helpful error
   throw new Error(
-    `No Chromium-based browser found on this machine (platform: ${platform}).\n` +
-    `Install Google Chrome or Chromium, or set the PUPPETEER_EXECUTABLE_PATH ` +
-    `environment variable to the browser executable.\n\n` +
-    `Checked paths:\n${candidates.map(p => `  • ${p}`).join("\n")}`
+    `No Chromium-based browser found (platform: ${platform}).\n\n` +
+    `Options:\n` +
+    `  • Install Google Chrome or Chromium locally\n` +
+    `  • Set PUPPETEER_EXECUTABLE_PATH to your browser executable\n` +
+    `  • On hosted servers: @sparticuz/chromium is already included\n\n` +
+    `Checked paths:\n${candidates.map((p) => `  • ${p}`).join("\n")}`
   );
 }
