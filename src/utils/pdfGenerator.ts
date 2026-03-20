@@ -1,9 +1,10 @@
 import axios from "axios";
-import puppeteer from "puppeteer-core";
+import { getBrowser } from "./browserPool";
 import { createLogger } from "./logger";
-import { resolveBrowserConfig } from "./browserResolver";
 
 const logger = createLogger("PdfGenerator");
+
+// ─── SVG helpers ──────────────────────────────────────────────────────────────
 
 /**
  * Parses the viewBox / width / height attributes from an SVG string.
@@ -47,16 +48,17 @@ function isSvgContent(buffer: Buffer, mimeType: string): boolean {
   return buffer.slice(0, 512).toString("utf8").trimStart().toLowerCase().includes("<svg");
 }
 
+// ─── SVG → PDF via shared browser ────────────────────────────────────────────
+
 /**
- * Uses Puppeteer to render an SVG string into a pixel-perfect PDF.
- * The page is sized exactly to the SVG's own viewBox / width+height.
+ * Renders an SVG string to PDF using the shared browser instance.
+ * Opens a new page, renders, captures PDF, then closes the page.
+ * The browser itself stays alive for the next call.
  */
 async function svgToPdf(svgText: string): Promise<Buffer> {
   const { width, height } = parseSvgDimensions(svgText);
 
-  logger.debug(`Launching headless browser for SVG→PDF (page: ${width}×${height}px)`);
-
-  const { executablePath, args } = await resolveBrowserConfig();
+  logger.debug(`Rendering SVG→PDF (page: ${width}×${height}px)`);
 
   const html = `<!DOCTYPE html>
 <html>
@@ -71,14 +73,11 @@ async function svgToPdf(svgText: string): Promise<Buffer> {
   <body>${svgText}</body>
 </html>`;
 
-  const browser = await puppeteer.launch({
-    executablePath,
-    args,
-    headless: true,
-  });
+  // Reuse the shared browser — do NOT close it here
+  const browser = await getBrowser();
+  const page = await browser.newPage();
 
   try {
-    const page = await browser.newPage();
     await page.setViewport({ width: Math.ceil(width), height: Math.ceil(height) });
     await page.setContent(html, { waitUntil: "domcontentloaded", timeout: 10_000 });
 
@@ -89,19 +88,22 @@ async function svgToPdf(svgText: string): Promise<Buffer> {
       margin: { top: 0, right: 0, bottom: 0, left: 0 },
     });
 
-    logger.debug(`Puppeteer PDF rendered — ${pdfBuffer.byteLength} bytes`);
+    logger.debug(`PDF rendered — ${pdfBuffer.byteLength} bytes`);
     return Buffer.from(pdfBuffer);
   } finally {
-    await browser.close();
-    logger.debug("Headless browser closed");
+    // Always close the page — but never the browser
+    await page.close();
+    logger.debug("Page closed");
   }
 }
+
+// ─── Public API ───────────────────────────────────────────────────────────────
 
 /**
  * Downloads an image from `imageUrl` and converts it to a PDF buffer.
  *
- * - SVG         → Puppeteer renders at native dimensions → PDF
- * - JPEG / PNG  → PDFKit embeds directly → PDF
+ * - SVG        → shared Puppeteer browser renders at native dimensions → PDF
+ * - JPEG / PNG → PDFKit embeds directly → PDF
  */
 export async function generatePdfFromImage(imageUrl: string): Promise<Buffer> {
   logger.info(`Downloading image: ${imageUrl}`);
